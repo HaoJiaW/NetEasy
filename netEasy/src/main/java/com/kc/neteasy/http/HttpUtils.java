@@ -2,33 +2,28 @@ package com.kc.neteasy.http;
 
 import android.content.Context;
 import android.net.Network;
-import android.widget.Toast;
+import android.os.AsyncTask;
 
 import com.kc.neteasy.ICallBack.INetWork;
 import com.kc.neteasy.ICallBack.IResult;
 import com.kc.neteasy.network.NetWorkAvailable;
 import com.kc.neteasy.network.NetWorkUtils;
 import com.kc.neteasy.view.ProgressUtils;
-import com.maning.mndialoglibrary.config.MDialogConfig;
+import com.kc.neteasy.ICallBack.INetWork;
+import com.kc.neteasy.ICallBack.IResult;
+import com.kc.neteasy.network.NetWorkAvailable;
+import com.kc.neteasy.network.NetWorkUtils;
+import com.kc.neteasy.view.ProgressUtils;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.logging.Handler;
 
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.core.Observable;
-import io.reactivex.rxjava3.core.Observer;
-import io.reactivex.rxjava3.disposables.Disposable;
-import io.reactivex.rxjava3.functions.Function;
-import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class HttpUtils {
 
@@ -46,7 +41,7 @@ public class HttpUtils {
     private Network network;
     private String result = "";
 
-    public void getJsonStrFromUrl(Context context, String urlTxt, IResult response) {
+    public void getJsonStrFromUrl(final Context context, String urlTxt, IResult response) {
         boolean mobileAva = NetWorkAvailable.getInstance(context).moblieConnected();
         boolean wifiAva = NetWorkAvailable.getInstance(context).wifiConnected();
         System.out.println("mobileAva:" + mobileAva + ",wifiAva:" + wifiAva);
@@ -63,38 +58,39 @@ public class HttpUtils {
                     ProgressUtils.getInstance(context).closePD();
                     return;
                 }
-                Observable.just(network)
-                        .map(new Function<Network, String>() {
-                            @Override
-                            public String apply(Network network) throws Throwable {
-                                return getJsonStrFromUrl(network, urlTxt);
-                            }
-                        }).subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Observer<String>() {
-                            @Override
-                            public void onSubscribe(Disposable d) {
-
-                            }
-
-                            @Override
-                            public void onNext(String s) {
-                                response.onResponse(s);
-                                ProgressUtils.getInstance(context).closePD();
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-                                ProgressUtils.getInstance(context).showMT("查询出错！");
-                                ProgressUtils.getInstance(context).closePD();
-                            }
-
-                            @Override
-                            public void onComplete() {
-                            }
-                        });
+                new InternetAsyncTask(network,context,response).equals(urlTxt);
             }
         });
+    }
+
+    class InternetAsyncTask extends AsyncTask<String,Void,String>{
+
+        private Network network;
+        private Context context;
+        private IResult result;
+        public  InternetAsyncTask(Network network,Context context,IResult result){
+            this.network =network;
+            this.context =context;
+            this.result =result;
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+            if (strings.length==1){
+                String urlTxt = strings[0];
+                return getJsonStrFromUrl(network, urlTxt);
+            }else {
+                String urlTxt = strings[0];
+                String jsonStr = strings[1];
+                return wirteJsonStr(network, jsonStr, urlTxt);
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            result.onResponse(s);
+            ProgressUtils.getInstance(context).closePD();
+        }
     }
 
     public void wirteJsonStrToUrl(Context context, String urlTxt, String jsonStr, IResult response) {
@@ -115,36 +111,7 @@ public class HttpUtils {
                     ProgressUtils.getInstance(context).closePD();
                     return;
                 }
-                Observable.just(network)
-                        .map(new Function<Network, String>() {
-                            @Override
-                            public String apply(Network network) throws Throwable {
-                                return wirteJsonStr(network, jsonStr, urlTxt);
-                            }
-                        }).subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Observer<String>() {
-                            @Override
-                            public void onSubscribe(Disposable d) {
-
-                            }
-
-                            @Override
-                            public void onNext(String s) {
-                                response.onResponse(s);
-                                ProgressUtils.getInstance(context).closePD();
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-                                ProgressUtils.getInstance(context).showMT("上传出错！");
-                                ProgressUtils.getInstance(context).closePD();
-                            }
-
-                            @Override
-                            public void onComplete() {
-                            }
-                        });
+                new InternetAsyncTask(network,context,response).execute(urlTxt,jsonStr);
             }
         });
     }

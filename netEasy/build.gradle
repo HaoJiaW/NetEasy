@@ -42,8 +42,8 @@ dependencies {
 //    implementation 'com.squareup.retrofit2:retrofit:2.7.2'
 //    implementation 'com.squareup.retrofit2:adapter-rxjava:2.7.2'
 //    implementation 'com.squareup.retrofit2:converter-gson:2.7.2'
-    implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
-    implementation 'io.reactivex.rxjava3:rxjava:3.0.0'
+//    implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
+//    implementation 'io.reactivex.rxjava3:rxjava:3.0.0'
 
     implementation 'com.github.maning0303:MNProgressHUD:V2.0.0'
 
