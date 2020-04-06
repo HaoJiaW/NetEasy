@@ -6,10 +6,13 @@ import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.kc.neteasy.bean.AppContants;
 import com.kc.neteasy.bean.WifiBean;
 import com.kc.neteasy.view.ProgressUtils;
+
+import org.slf4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -61,15 +64,33 @@ public class WifiUtils {
     }
 
     public void connectAssignWifi(String wifiName){
+        connectAssignWifi(wifiName,false,null);
+    }
+
+    public void connectAssignWifi(String wifiName, boolean showToast){
+        connectAssignWifi(wifiName,showToast,null);
+    }
+
+    public void connectAssignWifi(String wifiName, boolean showToast, Logger log){
         String currentWifiName = getWifiSSID(context);
         if (!currentWifiName.equals(wifiName)) {
             System.out.println("网络连接改变了，目前的wifi："+currentWifiName);
             WifiConfiguration tempConfig = isExsits(wifiName, context);
             if (tempConfig!=null){
-                ProgressUtils.getInstance(context).showMT("网络连接改变了,尝试连接指定wifi");
                 addNetWork(tempConfig, context);
+                if (showToast){
+                    ProgressUtils.getInstance(context).showMT("网络连接改变了,正在连接指定wifi");
+                }
+                if (log!=null){
+                    log.info("网络连接改变了,正在连接指定wifi");
+                }
             }else {
-                ProgressUtils.getInstance(context).showMT("无法连接指定wifi");
+                if (showToast){
+                    ProgressUtils.getInstance(context).showMT("无法连接指定wifi");
+                }
+                if (log!=null){
+                    log.warn("无法连接指定wifi");
+                }
             }
         }
     }
