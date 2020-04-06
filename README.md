@@ -7,6 +7,6 @@
 
 
 # 使用  
-implementation 'com.github.HaoJiaW:NetEasy:v1.0.0'
+implementation 'com.github.HaoJiaW:NetEasy:v1.1.0'<br>
 implementation 'com.github.maning0303:MNProgressHUD:V2.0.0'
 	
