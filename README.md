@@ -9,5 +9,3 @@
 # 使用  
 implementation 'com.github.HaoJiaW:NetEasy:v1.0.0'
 	
-	
-	持续更新，敬请期待
