@@ -58,7 +58,7 @@ public class HttpUtils {
                     ProgressUtils.getInstance(context).closePD();
                     return;
                 }
-                new InternetAsyncTask(network, context, response).equals(urlTxt);
+                new InternetAsyncTask(network, context, response).execute(urlTxt);
             }
         });
     }
