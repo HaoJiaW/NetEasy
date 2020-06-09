@@ -49,7 +49,7 @@ public class HttpUtils {
             ProgressUtils.getInstance(context).showMT("移动网络不可用！");
             return;
         }
-        ProgressUtils.getInstance(context).showPD(showProgressOrToast,"查询数据中");
+        ProgressUtils.getInstance(context).showPD(showProgressOrToast, "查询数据中");
         NetWorkUtils.getInstance(context).getNetWork(new INetWork() {
             @Override
             public void onNetworkBack(Network network) {
@@ -58,30 +58,33 @@ public class HttpUtils {
                     ProgressUtils.getInstance(context).closePD();
                     return;
                 }
-                new InternetAsyncTask(network,context,response).equals(urlTxt);
+                new InternetAsyncTask(network, context, response).equals(urlTxt);
             }
         });
     }
 
-    class InternetAsyncTask extends AsyncTask<String,Void,String>{
+    class InternetAsyncTask extends AsyncTask<String, Void, String> {
 
         private Network network;
         private Context context;
         private IResult result;
-        public  InternetAsyncTask(Network network,Context context,IResult result){
-            this.network =network;
-            this.context =context;
-            this.result =result;
+
+        public InternetAsyncTask(Network network, Context context, IResult result) {
+            this.network = network;
+            this.context = context;
+            this.result = result;
         }
 
         @Override
         protected String doInBackground(String... strings) {
-            if (strings.length==1){
+            if (strings.length == 1) {
                 String urlTxt = strings[0];
+                System.out.println("url:" + urlTxt);
                 return getJsonStrFromUrl(network, urlTxt);
-            }else {
+            } else {
                 String urlTxt = strings[0];
                 String jsonStr = strings[1];
+                System.out.println("url:" + urlTxt + ",jsonStr:" + jsonStr);
                 return wirteJsonStr(network, jsonStr, urlTxt);
             }
         }
@@ -102,7 +105,7 @@ public class HttpUtils {
             return;
         }
 
-        ProgressUtils.getInstance(context).showPD(showProgressOrToast,"上传数据中");
+        ProgressUtils.getInstance(context).showPD(showProgressOrToast, "上传数据中");
         NetWorkUtils.getInstance(context).getNetWork(new INetWork() {
             @Override
             public void onNetworkBack(Network network) {
@@ -111,7 +114,7 @@ public class HttpUtils {
                     ProgressUtils.getInstance(context).closePD();
                     return;
                 }
-                new InternetAsyncTask(network,context,response).execute(urlTxt,jsonStr);
+                new InternetAsyncTask(network, context, response).execute(urlTxt, jsonStr);
             }
         });
     }
@@ -133,6 +136,7 @@ public class HttpUtils {
                 stringBuilder.append(line);
             }
             jsonStr = stringBuilder.toString();
+            System.out.println("jsonStr:" + jsonStr);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
