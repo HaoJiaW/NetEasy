@@ -73,6 +73,9 @@ public class DownFragment extends Fragment {
         if (item.getItemId() == R.id.changeItem) {
             MainActivity.getInstance().getNavController().navigate(R.id.action_downFragment_to_upFragment);
         }
+        if (item.getItemId() == R.id.wifiItem) {
+            MainActivity.getInstance().getNavController().navigate(R.id.action_downFragment_to_wifiTestFragment);
+        }
         return super.onOptionsItemSelected(item);
     }
 

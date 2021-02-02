@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/main_nav"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_nav"
     app:startDestination="@id/downFragment">
 
 
@@ -11,9 +13,17 @@
         <action
             android:id="@+id/action_downFragment_to_upFragment"
             app:destination="@id/upFragment" />
+        <action
+            android:id="@+id/action_downFragment_to_wifiTestFragment"
+            app:destination="@id/wifiTestFragment" />
     </fragment>
     <fragment
         android:id="@+id/upFragment"
         android:name="com.kc.neteasy.fragment.UpFragment"
         android:label="上传数据" />
+    <fragment
+        android:id="@+id/wifiTestFragment"
+        android:name="com.kc.neteasy.WifiTestFragment"
+        android:label="fragment_wifi_test"
+        tools:layout="@layout/fragment_wifi_test" />
 </navigation>

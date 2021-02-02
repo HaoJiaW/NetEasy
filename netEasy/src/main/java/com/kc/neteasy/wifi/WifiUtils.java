@@ -1,15 +1,22 @@
 package com.kc.neteasy.wifi;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
+import android.net.NetworkRequest;
+import android.net.NetworkSpecifier;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.net.wifi.WifiNetworkSpecifier;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.kc.neteasy.bean.AppContants;
 import com.kc.neteasy.bean.WifiBean;
+import com.kc.neteasy.view.DialogHelper;
 import com.kc.neteasy.view.ProgressUtils;
 
 import org.slf4j.Logger;
@@ -17,6 +24,8 @@ import org.slf4j.Logger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import androidx.annotation.NonNull;
 
 public class WifiUtils {
 
@@ -70,6 +79,8 @@ public class WifiUtils {
     public void connectAssignWifi(String wifiName, boolean showToast){
         connectAssignWifi(wifiName,showToast,null);
     }
+
+
 
     public void connectAssignWifi(String wifiName, boolean showToast, Logger log){
         String currentWifiName = getWifiSSID(context);
@@ -214,6 +225,42 @@ public class WifiUtils {
             return 4;
         }
     }
+
+    public void connectWifi(Context context,String ssid){
+        WifiNetworkSpecifier wifiNetworkSpecifier = new WifiNetworkSpecifier.Builder().
+                setSsid("xzd3902878").setWpa2Passphrase("135797531").build();
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            NetworkRequest request = new NetworkRequest.Builder()
+                    .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+                    .setNetworkSpecifier(wifiNetworkSpecifier)
+                    .build();
+            ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            connectivityManager.requestNetwork(request,new ConnectivityManager.NetworkCallback(){
+                @Override
+                public void onAvailable(@NonNull Network network) {
+                    super.onAvailable(network);
+                    System.out.println("当前network可用");
+                }
+            });
+        }
+    }
+
+    public void checkWifiEnable(Context context){
+        if (!isWifiEnable(context)){
+            DialogHelper.getInstance().showWifiEnableDialog(context);
+        }
+    }
+
+    private boolean isWifiEnable(Context context){
+        WifiManager wifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        return wifiManager.isWifiEnabled();
+    }
+
+    public void setWifiEnable(Context context,boolean openWifi){
+        WifiManager wifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        wifiManager.setWifiEnabled(true);
+    }
+
 
 
 
