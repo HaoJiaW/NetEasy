@@ -251,7 +251,7 @@ public class WifiUtils {
         }
     }
 
-    private boolean isWifiEnable(Context context){
+    public boolean isWifiEnable(Context context){
         WifiManager wifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         return wifiManager.isWifiEnabled();
     }
